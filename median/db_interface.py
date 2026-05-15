@@ -36,23 +36,26 @@ class BaseDBInterface(ABC):
     def get_prices(
             self,
             product: str,
-            location: str,
+            location: str = "",
             days: int = 7,
     ) -> List[PriceEntry]:
         """
-        Retrieve all price submissions for a product+location within N days.
+        Retrieve price submissions for a product within N days.
+
+        If location is provided, return prices for product + location.
+        If location is empty, return prices for product across all locations.
 
         Args:
-            product:  canonical product name  e.g. "tomato"
-            location: canonical location name e.g. "Mile 12"
-            days:     lookback window in days (default 7)
+            product:  canonical product name e.g. "tomato"
+            location: canonical location name e.g. "Mile 12".
+                      Empty string means search all locations.
+            days:     lookback window in days.
 
         Returns:
             List of PriceEntry objects. Empty list if no data found.
             Must never raise — return [] on error.
         """
         pass
-
     @abstractmethod
     def submit_price(self, submission: PriceSubmission) -> bool:
         """
@@ -152,15 +155,27 @@ class MockDBInterface(BaseDBInterface):
             "u004": 0.8, "u005": 0.6, "u006": 0.4,
         }
 
-    def get_prices(self, product: str, location: str, days: int = 7) -> List[PriceEntry]:
+    def get_prices(self, product: str, location: str = "", days: int = 7) -> List[PriceEntry]:
         from datetime import datetime, timedelta
+
         cutoff = datetime.utcnow() - timedelta(days=days)
-        return [
-            e for e in self._prices
-            if e.product.lower() == product.lower()
-               and e.location.lower() == location.lower()
-               and datetime.fromisoformat(e.timestamp).replace(tzinfo=None) >= cutoff.replace(tzinfo=None)
-        ]
+
+        product = (product or "").strip().lower()
+        location = (location or "").strip().lower()
+
+        results = []
+
+        for e in self._prices:
+            entry_time = datetime.fromisoformat(e.timestamp).replace(tzinfo=None)
+
+            product_matches = e.product.lower() == product
+            location_matches = True if location == "" else e.location.lower() == location
+            within_time = entry_time >= cutoff.replace(tzinfo=None)
+
+            if product_matches and location_matches and within_time:
+                results.append(e)
+
+        return results
 
     def submit_price(self, submission: PriceSubmission) -> bool:
         self._prices.append(PriceEntry(

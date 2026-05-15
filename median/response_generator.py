@@ -12,6 +12,15 @@ class ResponseGenerator:
 
     TEMPLATES = {
 
+        "PRICE_FOUND_FALLBACK": [
+            "We no get enough exact data for {product} in {location} yet, "
+            "but based on recent prices from other markets, estimated price na "
+            "₦{low}–₦{high} per {unit}. Actual price for {location} fit differ.",
+
+            "No exact price for {product} in {location} yet. "
+            "General market estimate: ₦{low}–₦{high} per {unit}.",
+        ],
+
         "PRICE_FOUND_HIGH": [
             "{product} dey go for ₦{low}–₦{high} per {unit} for {location}. "
             "Last update: {freshness}. ({data_points} reports)",
@@ -103,6 +112,8 @@ class ResponseGenerator:
                          intent: Optional[ParsedIntent]) -> str:
         if estimate.status == "submitted":
             return "SUBMIT_CONFIRMED"
+        if estimate.status == "fallback":
+            return "PRICE_FOUND_FALLBACK"
         if estimate.status == "error":
             return "ERROR"
         if estimate.status == "no_data":

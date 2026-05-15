@@ -77,53 +77,119 @@ class PriceEngine:
 
     # ── QUERY path ────────────────────────────────────────────────────────────
     def _handle_query(self, intent: ParsedIntent) -> PriceEstimate:
-        entries = self.db.get_prices(
-            product=intent.product or "",
-            location=intent.location or "",
+        product = intent.product or ""
+        location = intent.location or ""
+
+        # If no product, we cannot estimate anything useful
+        if not product:
+            return PriceEstimate(
+                product=product,
+                location=location,
+                unit=intent.unit,
+                price_low=None,
+                price_high=None,
+                price_median=None,
+                data_points=0,
+                freshness=None,
+                confidence="no_data",
+                status="no_data",
+            )
+
+        # 1. Exact search: product + requested location
+        exact_entries = self.db.get_prices(
+            product=product,
+            location=location,
             days=self.lookback_days,
         )
 
-        if not entries:
-            return PriceEstimate(
-                product=intent.product or "", location=intent.location or "",
-                unit=intent.unit, price_low=None, price_high=None,
-                price_median=None, data_points=0,
-                freshness=None, confidence="no_data", status="no_data",
+        if exact_entries:
+            return self._build_estimate_from_entries(
+                entries=exact_entries,
+                product=product,
+                location=location,
+                stated_unit=intent.unit,
+                status="found",
+                fallback=False,
             )
 
+        # 2. Fallback search: same product, any location
+        fallback_entries = self.db.get_prices(
+            product=product,
+            location="",
+            days=self.lookback_days,
+        )
+
+        if fallback_entries:
+            return self._build_estimate_from_entries(
+                entries=fallback_entries,
+                product=product,
+                location=location,
+                stated_unit=intent.unit,
+                status="fallback",
+                fallback=True,
+            )
+
+        # 3. No product data anywhere
+        return PriceEstimate(
+            product=product,
+            location=location,
+            unit=intent.unit,
+            price_low=None,
+            price_high=None,
+            price_median=None,
+            data_points=0,
+            freshness=None,
+            confidence="no_data",
+            status="no_data",
+        )
+
+    def _build_estimate_from_entries(
+            self,
+            entries: List[PriceEntry],
+            product: str,
+            location: str,
+            stated_unit: Optional[str],
+            status: str,
+            fallback: bool = False,
+    ) -> PriceEstimate:
         # Step 1 — IQR anomaly filter
         filtered = self._iqr_filter(entries)
         if not filtered:
-            filtered = entries  # if filter removes everything, use all
+            filtered = entries
 
-        # Step 2 — Compute weights (recency × reputation)
-        weights = self._compute_weights(filtered, intent.product or "")
+        # Step 2 — Compute weights
+        weights = self._compute_weights(filtered, product)
 
         # Step 3 — Weighted median
-        median = self._weighted_median(
-            [e.price for e in filtered], weights
-        )
         prices = [e.price for e in filtered]
+        median = self._weighted_median(prices, weights)
 
-        # Step 4 — Confidence level
+        # Step 4 — Freshness
         freshest_hours = self._hours_since(
             min(filtered, key=lambda e: self._hours_since(e.timestamp)).timestamp
         )
+
+        # Step 5 — Confidence
         confidence = self._compute_confidence(len(filtered), freshest_hours)
 
+        # Fallback estimates should not pretend to be high confidence
+        if fallback and confidence == "high":
+            confidence = "medium"
+        elif fallback and confidence == "medium":
+            confidence = "low"
+
         return PriceEstimate(
-            product=intent.product or "",
-            location=intent.location or "",
-            unit=self._infer_unit(filtered, intent.unit),
+            product=product,
+            location=location,
+            unit=self._infer_unit(filtered, stated_unit),
             price_low=round(min(prices), 2),
             price_high=round(max(prices), 2),
             price_median=round(median, 2),
             data_points=len(filtered),
             freshness=self._human_freshness(freshest_hours),
             confidence=confidence,
-            status="found",
+            status=status,
         )
-
     # ── SUBMIT path ───────────────────────────────────────────────────────────
     def _handle_submit(self, intent: ParsedIntent, user_id: str,
                        timestamp: str) -> PriceEstimate:
