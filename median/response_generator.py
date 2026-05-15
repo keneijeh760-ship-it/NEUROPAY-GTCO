@@ -13,13 +13,13 @@ class ResponseGenerator:
     TEMPLATES = {
 
         "PRICE_FOUND_FALLBACK": [
-            "We no get enough exact data for {product} in {location} yet, "
-            "but based on recent prices from other markets, estimated price na "
-            "₦{low}–₦{high} per {unit}. Actual price for {location} fit differ.",
+    "No exact price for {product} in {location} yet. "
+    "Based on available market reports, estimate is ₦{low}–₦{high} per {unit}. "
+    "Actual price for {location} may differ.",
 
-            "No exact price for {product} in {location} yet. "
-            "General market estimate: ₦{low}–₦{high} per {unit}.",
-        ],
+    "We do not have enough exact data for {product} in {location} yet. "
+    "General market estimate: ₦{low}–₦{high} per {unit}.",
+],
 
         "PRICE_FOUND_HIGH": [
             "{product} dey go for ₦{low}–₦{high} per {unit} for {location}. "

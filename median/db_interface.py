@@ -148,6 +148,202 @@ class MockDBInterface(BaseDBInterface):
             PriceEntry(price=78000.0, unit="50kg bag", product="rice",
                        location="Mile 12", user_id="u004", reputation_score=0.7,
                        timestamp=(now - timedelta(hours=5)).isoformat()),
+            # Garri — demo seed, multiple units
+            PriceEntry(price=850.0, unit="kg", product="garri",
+                       location="Mushin Market", user_id="demo_seed", reputation_score=0.3,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+            PriceEntry(price=2300.0, unit="paint bucket", product="garri",
+                       location="Mushin Market", user_id="demo_seed", reputation_score=0.3,
+                       timestamp=(now - timedelta(hours=5)).isoformat()),
+
+            # Okra — demo seed
+            PriceEntry(price=1200.0, unit="kg", product="okra",
+                       location="Mile 12", user_id="demo_seed", reputation_score=0.3,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+            PriceEntry(price=2500.0, unit="paint bucket", product="okra",
+                       location="Mile 12", user_id="demo_seed", reputation_score=0.3,
+                       timestamp=(now - timedelta(hours=3)).isoformat()),
+
+            # Leafy vegetables — demo seed
+            PriceEntry(price=500.0, unit="bunch", product="efo",
+                       location="Mushin Market", user_id="demo_seed", reputation_score=0.3,
+                       timestamp=(now - timedelta(hours=4)).isoformat()),
+            PriceEntry(price=700.0, unit="bunch", product="ugu",
+                       location="Mile 12", user_id="demo_seed", reputation_score=0.3,
+                       timestamp=(now - timedelta(hours=3)).isoformat()),
+            PriceEntry(price=400.0, unit="bunch", product="bitter leaf",
+                       location="Oyingbo Market", user_id="demo_seed", reputation_score=0.3,
+                       timestamp=(now - timedelta(hours=5)).isoformat()),
+
+            # Soup ingredients — demo seed
+            PriceEntry(price=6500.0, unit="kg", product="egusi",
+                       location="Mile 12", user_id="demo_seed", reputation_score=0.3,
+                       timestamp=(now - timedelta(hours=1)).isoformat()),
+            PriceEntry(price=1800.0, unit="cup", product="egusi",
+                       location="Mile 12", user_id="demo_seed", reputation_score=0.3,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+            PriceEntry(price=8000.0, unit="kg", product="ogbono",
+                       location="Mushin Market", user_id="demo_seed", reputation_score=0.3,
+                       timestamp=(now - timedelta(hours=3)).isoformat()),
+            PriceEntry(price=9000.0, unit="kg", product="crayfish",
+                       location="Oyingbo Market", user_id="demo_seed", reputation_score=0.3,
+                       timestamp=(now - timedelta(hours=6)).isoformat()),
+
+            # Oil — demo seed
+            PriceEntry(price=1800.0, unit="litre", product="palm oil",
+                       location="Oyingbo Market", user_id="demo_seed", reputation_score=0.3,
+                       timestamp=(now - timedelta(hours=6)).isoformat()),
+            # Verified seed prices — Lagos State Ministry of Agriculture Food Price Tracker, February 2026
+            # Source: Lagos Agric Price Tracker
+            PriceEntry(price=30500.0, unit="25kg bag", product="rice",
+                       location="Lagos Average", user_id="seed_lagos_agric", reputation_score=0.9,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+
+            PriceEntry(price=61000.0, unit="50kg bag", product="rice",
+                       location="Lagos Average", user_id="seed_lagos_agric", reputation_score=0.9,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+
+            PriceEntry(price=1480.0, unit="paint bucket", product="garri",
+                       location="Lagos Average", user_id="seed_lagos_agric", reputation_score=0.9,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+
+            PriceEntry(price=1422.22, unit="paint bucket", product="garri",
+                       location="Lagos Average", user_id="seed_lagos_agric", reputation_score=0.9,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+
+            PriceEntry(price=1644.44, unit="paint bucket", product="garri",
+                       location="Lagos Average", user_id="seed_lagos_agric", reputation_score=0.9,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+
+            PriceEntry(price=5433.33, unit="crate", product="egg",
+                       location="Lagos Average", user_id="seed_lagos_agric", reputation_score=0.9,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+
+            PriceEntry(price=2577.78, unit="tuber", product="yam",
+                       location="Lagos Average", user_id="seed_lagos_agric", reputation_score=0.9,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+
+            PriceEntry(price=833.33, unit="kg", product="tomato",
+                       location="Lagos Average", user_id="seed_lagos_agric", reputation_score=0.9,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+
+            PriceEntry(price=1605.56, unit="kg", product="pepper",
+                       location="Lagos Average", user_id="seed_lagos_agric", reputation_score=0.9,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+
+            PriceEntry(price=1677.78, unit="kg", product="tatashe",
+                       location="Lagos Average", user_id="seed_lagos_agric", reputation_score=0.9,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+
+            PriceEntry(price=1655.56, unit="kg", product="shombo",
+                       location="Lagos Average", user_id="seed_lagos_agric", reputation_score=0.9,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+
+            PriceEntry(price=1033.33, unit="kg", product="onion",
+                       location="Lagos Average", user_id="seed_lagos_agric", reputation_score=0.9,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+            # ── Verified seed prices: Lagos State Ministry of Agriculture
+            # Source: Lagos Food Price Tracker, February 2026
+            # https://lagosagric.com/price-tracker/
+            # These are Lagos average prices.
+
+            PriceEntry(price=30500.0, unit="25kg bag", product="rice",
+                       location="Lagos Average", user_id="seed_lagos_agric_feb_2026",
+                       reputation_score=0.9,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+
+            PriceEntry(price=27388.89, unit="25kg bag", product="rice",
+                       location="Lagos Average", user_id="seed_lagos_agric_feb_2026",
+                       reputation_score=0.9,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+
+            PriceEntry(price=61000.0, unit="50kg bag", product="rice",
+                       location="Lagos Average", user_id="seed_lagos_agric_feb_2026",
+                       reputation_score=0.9,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+
+            PriceEntry(price=54444.44, unit="50kg bag", product="rice",
+                       location="Lagos Average", user_id="seed_lagos_agric_feb_2026",
+                       reputation_score=0.9,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+
+            PriceEntry(price=1480.0, unit="paint bucket", product="garri",
+                       location="Lagos Average", user_id="seed_lagos_agric_feb_2026",
+                       reputation_score=0.9,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+
+            PriceEntry(price=1422.22, unit="paint bucket", product="garri",
+                       location="Lagos Average", user_id="seed_lagos_agric_feb_2026",
+                       reputation_score=0.9,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+
+            PriceEntry(price=1644.44, unit="paint bucket", product="garri",
+                       location="Lagos Average", user_id="seed_lagos_agric_feb_2026",
+                       reputation_score=0.9,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+
+            PriceEntry(price=5433.33, unit="crate", product="egg",
+                       location="Lagos Average", user_id="seed_lagos_agric_feb_2026",
+                       reputation_score=0.9,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+
+            PriceEntry(price=2577.78, unit="tuber", product="yam",
+                       location="Lagos Average", user_id="seed_lagos_agric_feb_2026",
+                       reputation_score=0.9,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+
+            PriceEntry(price=833.33, unit="kg", product="tomato",
+                       location="Lagos Average", user_id="seed_lagos_agric_feb_2026",
+                       reputation_score=0.9,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+
+            PriceEntry(price=1605.56, unit="kg", product="pepper",
+                       location="Lagos Average", user_id="seed_lagos_agric_feb_2026",
+                       reputation_score=0.9,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+
+            PriceEntry(price=1677.78, unit="kg", product="tatashe",
+                       location="Lagos Average", user_id="seed_lagos_agric_feb_2026",
+                       reputation_score=0.9,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+
+            PriceEntry(price=1655.56, unit="kg", product="shombo",
+                       location="Lagos Average", user_id="seed_lagos_agric_feb_2026",
+                       reputation_score=0.9,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+
+            PriceEntry(price=1033.33, unit="kg", product="onion",
+                       location="Lagos Average", user_id="seed_lagos_agric_feb_2026",
+                       reputation_score=0.9,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+            # ── Verified seed prices: NBS Selected Food Price Watch
+            # Source: NBS March 2026 reporting
+            # These are Nigeria national average prices.
+
+            PriceEntry(price=6127.62, unit="crate", product="egg",
+                       location="Nigeria Average", user_id="seed_nbs_mar_2026",
+                       reputation_score=1.0,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+
+            PriceEntry(price=1325.85, unit="kg", product="beans",
+                       location="Nigeria Average", user_id="seed_nbs_mar_2026",
+                       reputation_score=1.0,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+
+            PriceEntry(price=801.54, unit="kg", product="garri",
+                       location="Nigeria Average", user_id="seed_nbs_mar_2026",
+                       reputation_score=1.0,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+
+            PriceEntry(price=1153.14, unit="kg", product="onion",
+                       location="Nigeria Average", user_id="seed_nbs_mar_2026",
+                       reputation_score=1.0,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
+
+            PriceEntry(price=5541.25, unit="kg", product="ginger",
+                       location="Nigeria Average", user_id="seed_nbs_mar_2026",
+                       reputation_score=1.0,
+                       timestamp=(now - timedelta(hours=2)).isoformat()),
         ]
 
         self._reputations = {

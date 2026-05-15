@@ -2,7 +2,7 @@ import math
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import List, Optional
-
+from median.normalizers import normalize_product, normalize_unit
 from nlu.base import ParsedIntent
 from median.db_interface import BaseDBInterface, PriceEntry, PriceSubmission
 
@@ -77,15 +77,16 @@ class PriceEngine:
 
     # ── QUERY path ────────────────────────────────────────────────────────────
     def _handle_query(self, intent: ParsedIntent) -> PriceEstimate:
-        product = intent.product or ""
+        product = normalize_product(intent.product or "")
         location = intent.location or ""
+        requested_unit = normalize_unit(intent.unit, product)
 
         # If no product, we cannot estimate anything useful
         if not product:
             return PriceEstimate(
                 product=product,
                 location=location,
-                unit=intent.unit,
+                unit=requested_unit,
                 price_low=None,
                 price_high=None,
                 price_median=None,
@@ -107,7 +108,7 @@ class PriceEngine:
                 entries=exact_entries,
                 product=product,
                 location=location,
-                stated_unit=intent.unit,
+                stated_unit=requested_unit,
                 status="found",
                 fallback=False,
             )
@@ -124,7 +125,7 @@ class PriceEngine:
                 entries=fallback_entries,
                 product=product,
                 location=location,
-                stated_unit=intent.unit,
+                stated_unit=requested_unit,
                 status="fallback",
                 fallback=True,
             )
@@ -133,7 +134,7 @@ class PriceEngine:
         return PriceEstimate(
             product=product,
             location=location,
-            unit=intent.unit,
+            unit=requested_unit,
             price_low=None,
             price_high=None,
             price_median=None,
@@ -193,6 +194,10 @@ class PriceEngine:
     # ── SUBMIT path ───────────────────────────────────────────────────────────
     def _handle_submit(self, intent: ParsedIntent, user_id: str,
                        timestamp: str) -> PriceEstimate:
+
+        product = normalize_product(intent.product or "")
+        location = intent.location or ""
+        unit = normalize_unit(intent.unit, product)
         # Sanity check — is this price plausible?
         if not self._sanity_check(intent):
             # Accept it but flag with low reputation weight (backend handles this
@@ -201,9 +206,9 @@ class PriceEngine:
                   f"{intent.product} @ {intent.location}")
 
         submission = PriceSubmission(
-            product=intent.product or "",
-            location=intent.location or "",
-            unit=intent.unit or "unit",
+            product=product,
+            location=location,
+            unit=unit,
             price=intent.price or 0.0,
             user_id=user_id,
             timestamp=timestamp,
@@ -211,16 +216,9 @@ class PriceEngine:
         success = self.db.submit_price(submission)
 
         return PriceEstimate(
-            product=intent.product or "",
-            location=intent.location or "",
-            unit=intent.unit,
-            price_low=intent.price,
-            price_high=intent.price,
-            price_median=intent.price,
-            data_points=1,
-            freshness="just now",
-            confidence="high" if success else "no_data",
-            status="submitted" if success else "error",
+            product=product,
+            location=location,
+            unit=unit,
         )
 
     # ── IQR anomaly filter ────────────────────────────────────────────────────
