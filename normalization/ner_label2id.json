@@ -1,0 +1,11 @@
+{
+  "O": 0,
+  "B-PRODUCT": 1,
+  "I-PRODUCT": 2,
+  "B-LOCATION": 3,
+  "I-LOCATION": 4,
+  "B-PRICE": 5,
+  "I-PRICE": 6,
+  "B-UNIT": 7,
+  "I-UNIT": 8
+}

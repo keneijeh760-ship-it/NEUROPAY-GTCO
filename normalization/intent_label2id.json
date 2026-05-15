@@ -1,0 +1,6 @@
+{
+  "QUERY": 0,
+  "SUBMIT_PRICE": 1,
+  "GREETING": 2,
+  "UNKNOWN": 3
+}
