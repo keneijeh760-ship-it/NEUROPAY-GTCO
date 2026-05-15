@@ -12,15 +12,15 @@ class ResponseGenerator:
 
     TEMPLATES = {
         "PRICE_FOUND_FALLBACK": [
-            "No exact price for {product} in {location} yet. "
-            "Based on available market reports, here are estimated prices:\n"
-            "{unit_options}\n"
-            "Actual price for {location} may differ.",
+    "No exact price for {product} in {location} yet. "
+    "Based on available market reports, here are estimated prices:\n"
+    "{unit_options}\n"
+    "Actual price for {location} may differ.",
 
-            "We do not have enough exact data for {product} in {location} yet. "
-            "General market estimates:\n"
-            "{unit_options}",
-        ],
+    "We do not have enough exact data for {product} in {location} yet. "
+    "General market estimates:\n"
+    "{unit_options}",
+],
 
         "PRICE_FOUND_HIGH": [
             "{product} price estimates for {location}:\n"
@@ -151,7 +151,7 @@ class ResponseGenerator:
 
         slots = {
             "product": self._titlecase(estimate.product or "the product"),
-            "location": estimate.location or "your location",
+            "location": self._titlecase(estimate.location or "your location"),
             "unit": estimate.unit or "unit",
             "low": fmt_price(estimate.price_low),
             "high": fmt_price(estimate.price_high),
