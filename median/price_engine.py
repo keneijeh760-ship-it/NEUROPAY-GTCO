@@ -158,19 +158,57 @@ class PriceEngine:
         if not filtered:
             filtered = entries
 
-        # Step 2 — Compute weights
+        # Step 2 — NEVER mix different units in one price estimate
+        requested_unit = (stated_unit or "").strip().lower()
+
+        if requested_unit:
+            same_unit_entries = [
+                e for e in filtered
+                if (e.unit or "").strip().lower() == requested_unit
+            ]
+        else:
+            same_unit_entries = []
+
+        if same_unit_entries:
+            filtered = same_unit_entries
+        else:
+            # If requested unit is not available, use the most common actual unit
+            available_units = [(e.unit or "").strip().lower() for e in filtered if e.unit]
+
+            if available_units:
+                most_common_unit = max(set(available_units), key=available_units.count)
+                filtered = [
+                    e for e in filtered
+                    if (e.unit or "").strip().lower() == most_common_unit
+                ]
+
+        if not filtered:
+            return PriceEstimate(
+                product=product,
+                location=location,
+                unit=stated_unit,
+                price_low=None,
+                price_high=None,
+                price_median=None,
+                data_points=0,
+                freshness=None,
+                confidence="no_data",
+                status="no_data",
+            )
+
+        # Step 3 — Compute weights after unit filtering
         weights = self._compute_weights(filtered, product)
 
-        # Step 3 — Weighted median
+        # Step 4 — Weighted median
         prices = [e.price for e in filtered]
         median = self._weighted_median(prices, weights)
 
-        # Step 4 — Freshness
+        # Step 5 — Freshness
         freshest_hours = self._hours_since(
             min(filtered, key=lambda e: self._hours_since(e.timestamp)).timestamp
         )
 
-        # Step 5 — Confidence
+        # Step 6 — Confidence
         confidence = self._compute_confidence(len(filtered), freshest_hours)
 
         # Fallback estimates should not pretend to be high confidence
@@ -179,10 +217,14 @@ class PriceEngine:
         elif fallback and confidence == "medium":
             confidence = "low"
 
+        # IMPORTANT:
+        # Use the actual unit from the filtered records, not the requested/default unit.
+        actual_unit = self._infer_unit(filtered, None)
+
         return PriceEstimate(
             product=product,
             location=location,
-            unit=self._infer_unit(filtered, stated_unit),
+            unit=actual_unit,
             price_low=round(min(prices), 2),
             price_high=round(max(prices), 2),
             price_median=round(median, 2),
